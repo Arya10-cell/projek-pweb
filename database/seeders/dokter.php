@@ -27,6 +27,20 @@ class dokter extends Seeder
                 'status' => 'aktif',
                 'id_klinik' => 1,
             ],
+            [
+                'nama_dokter' => 'Dr. Andi Wijaya',
+                'spesialisasi' => 'Dokter Anak',
+                'no_telepon' => '081234567892',
+                'status' => 'aktif',
+                'id_klinik' => 2,
+            ],
+            [
+                'nama_dokter' => 'Dr. Rina Pratiwi',
+                'spesialisasi' => 'Dokter Kandungan',
+                'no_telepon' => '081234567893',
+                'status' => 'non-aktif',
+                'id_klinik' => 2,
+            ]
         ]);
     }
 }
