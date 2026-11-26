@@ -12,9 +12,6 @@ return new class extends Migration
             $table->id('id_poli');
             $table->string('nama_poli');
             $table->text('deskripsi')->nullable();
-            $table->foreignId('id_klinik')
-                ->constrained('klinik', 'id_klinik')
-                ->cascadeOnDelete();
             $table->timestamps();
         });
     }
