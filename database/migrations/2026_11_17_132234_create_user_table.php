@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('email')->uniqe();
             $table->string('password');
-            $table->string('no_telepon')->nullable();
+            $table->string('no_telepon', 20)->nullable();
             $table->text('alamat')->nullable();
             $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
             $table->enum('role', ['admin', 'dokter', 'pasien'])->default('pasien');
