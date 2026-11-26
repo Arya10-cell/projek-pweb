@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nama_klinik');
             $table->text('alamat_klinik');
             $table->string('no_telp_klinik');
-            $tabble->string('email_klinik');
+            $table->string('email_klinik');
             $table->string('jam_operasional_klinik');
             $table->timestamps();
         });
