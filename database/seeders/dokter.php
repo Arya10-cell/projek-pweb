@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class dokter extends Seeder
 {
@@ -18,15 +19,29 @@ class dokter extends Seeder
                 'spesialisasi' => 'Dokter Umum',
                 'no_telepon' => '081234567890',
                 'status' => 'aktif',
-                'id_klinik' => 1,
+                
             ],
             [
                 'nama_dokter' => 'Dr. Siti Aminah',
                 'spesialisasi' => 'Dokter Gigi',
                 'no_telepon' => '081234567891',
                 'status' => 'aktif',
-                'id_klinik' => 1,
+                
             ],
+            [
+                'nama_dokter' => 'Dr. Andi Wijaya',
+                'spesialisasi' => 'Dokter Anak',
+                'no_telepon' => '081234567892',
+                'status' => 'aktif',
+                
+            ],
+            [
+                'nama_dokter' => 'Dr. Rina Pratiwi',
+                'spesialisasi' => 'Dokter Kandungan',
+                'no_telepon' => '081234567893',
+                'status' => 'nonaktif',
+                
+            ]
         ]);
     }
 }

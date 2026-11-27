@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu']);
             $table->time('jam_mulai');
             $table->time('jam_selesai');
-            $table->unsignedInteger('kuota_pasien');
+            $table->integer('kuota_pasien')->default(20);
             $table->timestamps();
         });
     }

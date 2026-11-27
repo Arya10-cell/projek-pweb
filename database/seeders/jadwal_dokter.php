@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class jadwal_dokter extends Seeder
 {
@@ -16,14 +17,14 @@ class jadwal_dokter extends Seeder
             [
                 'id_dokter' => 1,
                 'id_poli' => 1,
-                'hari' => 'Senin',
+                'hari' => 'senin',
                 'jam_mulai' => '08:00:00',
                 'jam_selesai' => '12:00:00',
             ],
             [
                 'id_dokter' => 1,
                 'id_poli' => 1,
-                'hari' => 'Rabu',
+                'hari' => 'rabu',
                 'jam_mulai' => '13:00:00',
                 'jam_selesai' => '17:00:00',
             ],

@@ -12,11 +12,8 @@ return new class extends Migration
             $table->id('id_dokter');
             $table->string('nama_dokter');
             $table->string('spesialisasi');
-            $table->string('no_telp');
+            $table->string('no_telepon', 20)->nullable();
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
-            $table->foreignId('id_klinik')
-                ->constrained('klinik', 'id_klinik')
-                ->cascadeOnDelete();
             $table->timestamps();
         });
     }
