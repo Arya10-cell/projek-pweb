@@ -8,14 +8,13 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('dokter', function (Blueprint $table) {
-            $table->id('id_dokter');
-            $table->string('nama_dokter');
-            $table->string('spesialisasi');
-            $table->string('no_telepon', 20)->nullable();
-            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
-            $table->timestamps();
-        });
+    Schema::create('dokter', function (Blueprint $table) {
+    $table->id('id_dokter');
+    $table->foreignId('id_user')->unique()->constrained('user', 'id_user')->cascadeOnDelete();
+    $table->string('spesialisasi');
+    $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
+    $table->timestamps();
+});
     }
 
     public function down(): void

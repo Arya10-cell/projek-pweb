@@ -12,7 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
+    ]);
+
+    // Kalau user yang sudah login membuka /login, arahkan ke dashboard role-nya
+    $middleware->redirectUsersTo(fn () => match (auth()->user()->role) {
+        'admin'  => '/admin/dashboard',
+        'dokter' => '/dokter/dashboard',
+        default  => '/pasien/dashboard',
+    });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
