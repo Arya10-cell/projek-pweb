@@ -1,71 +1,116 @@
 @extends('layouts.app')
 
-@section('title', 'Jadwal Dokter - AntriNik')
+@section('title', 'Kelola Jadwal Dokter - AntriNik')
 
 @section('content')
-<div class="page-header">
-    <h1>Jadwal Dokter</h1>
-    <a href="{{ route('jadwal-dokter.create') }}" class="btn btn-primary">Tambah Jadwal</a>
+<div class="flex items-center justify-between mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-900">Kelola Jadwal Dokter</h1>
+        <p class="text-slate-500 mt-1">Tambah, ubah, dan hapus jadwal praktik dokter</p>
+    </div>
+    <a href="{{ route('jadwal-dokter.create') }}"
+       class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium">
+        + Tambah Jadwal
+    </a>
 </div>
 
 @if (session('success'))
-    <div class="alert">{{ session('success') }}</div>
+    <div class="mb-5 px-4 py-3 rounded-lg border border-green-200 bg-green-50 text-green-800">
+        {{ session('success') }}
+    </div>
 @endif
 
-<table>
-    <thead>
-        <tr>
-            <th>No</th>
-            <th>Dokter</th>
-            <th>Poli</th>
-            <th>Hari</th>
-            <th>Jam Praktik</th>
-            <th>Kuota</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        @forelse ($jadwals as $index => $jadwal)
-            <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>
-                    {{ $jadwal->dokter->nama_dokter ?? '-' }}
-                    <span class="subtext">{{ $jadwal->dokter->spesialisasi ?? '' }}</span>
-                </td>
-                <td>{{ $jadwal->poli->nama_poli ?? '-' }}</td>
-                <td>{{ $jadwal->hari }}</td>
-                <td>{{ substr($jadwal->jam_mulai, 0, 5) }} - {{ substr($jadwal->jam_selesai, 0, 5) }}</td>
-                <td>{{ $jadwal->kuota_pasien }}</td>
-                <td>
-                    <div class="actions">
-                        <a href="{{ route('jadwal-dokter.edit', $jadwal->id_jadwal) }}" class="icon-btn icon-edit" title="Edit" aria-label="Edit">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 20h9"/>
-                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                            </svg>
-                        </a>
+<div class="bg-white border border-slate-200 rounded-lg p-5">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <h2 class="text-base font-semibold text-slate-900">Daftar Jadwal</h2>
 
-                        <form action="{{ route('jadwal-dokter.destroy', $jadwal->id_jadwal) }}" method="POST" onsubmit="return confirm('Hapus jadwal ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="icon-btn icon-delete" title="Hapus" aria-label="Hapus">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="3 6 5 6 21 6"/>
-                                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                                    <path d="M10 11v6"/>
-                                    <path d="M14 11v6"/>
-                                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-                                </svg>
-                            </button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="7" class="empty">Belum ada data jadwal dokter.</td>
-            </tr>
-        @endforelse
-    </tbody>
-</table>
+        <form action="{{ route('jadwal-dokter.index') }}" method="GET" class="flex flex-wrap items-center gap-2">
+            @if ($search)
+                <input type="hidden" name="q" value="{{ $search }}">
+            @endif
+
+            <select name="poli" onchange="this.form.submit()"
+                    class="px-3 py-1.5 border border-slate-300 rounded-md text-xs bg-white">
+                <option value="">Semua Poli</option>
+                @foreach ($polis as $poli)
+                    <option value="{{ $poli->id_poli }}" {{ (string) $poliId === (string) $poli->id_poli ? 'selected' : '' }}>
+                        {{ $poli->nama_poli }}
+                    </option>
+                @endforeach
+            </select>
+
+            <select name="hari" onchange="this.form.submit()"
+                    class="px-3 py-1.5 border border-slate-300 rounded-md text-xs bg-white">
+                <option value="">Semua Hari</option>
+                @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $h)
+                    <option value="{{ $h }}" {{ $hari === $h ? 'selected' : '' }}>{{ $h }}</option>
+                @endforeach
+            </select>
+
+            @if ($hasFilter)
+                <a href="{{ route('jadwal-dokter.index') }}"
+                   class="px-3 py-1.5 border border-slate-300 rounded-md text-xs hover:bg-slate-50">
+                    Reset
+                </a>
+            @endif
+        </form>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="border-b border-slate-200 bg-slate-50 text-xs text-slate-600 uppercase">
+                    <th class="py-3 px-4">ID</th>
+                    <th class="py-3 px-4">Dokter</th>
+                    <th class="py-3 px-4">Poli</th>
+                    <th class="py-3 px-4">Hari</th>
+                    <th class="py-3 px-4">Jam Praktik</th>
+                    <th class="py-3 px-4">Kuota</th>
+                    <th class="py-3 px-4">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @forelse ($jadwals as $jadwal)
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-3 px-4 font-medium text-blue-600">
+                            JDW-{{ str_pad($jadwal->id_jadwal, 3, '0', STR_PAD_LEFT) }}
+                        </td>
+                        <td class="py-3 px-4">
+                            <div class="font-medium text-slate-900">{{ $jadwal->dokter->nama_dokter ?? '-' }}</div>
+                            <div class="text-xs text-slate-500">{{ $jadwal->dokter->spesialisasi ?? '' }}</div>
+                        </td>
+                        <td class="py-3 px-4">{{ $jadwal->poli->nama_poli ?? '-' }}</td>
+                        <td class="py-3 px-4">{{ ucfirst($jadwal->hari) }}</td>
+                        <td class="py-3 px-4">
+                            {{ substr($jadwal->jam_mulai, 0, 5) }} - {{ substr($jadwal->jam_selesai, 0, 5) }} WIB
+                        </td>
+                        <td class="py-3 px-4">{{ $jadwal->kuota_pasien }} pasien</td>
+                        <td class="py-3 px-4">
+                            <div class="flex items-center gap-3 text-xs font-medium">
+                                <a href="{{ route('jadwal-dokter.edit', $jadwal->id_jadwal) }}"
+                                   class="text-blue-600 hover:underline">
+                                    Edit
+                                </a>
+
+                                <form action="{{ route('jadwal-dokter.destroy', $jadwal->id_jadwal) }}"
+                                      method="POST"
+                                      onsubmit="return confirm('Yakin ingin menghapus jadwal ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:underline">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="7" class="py-6 text-center text-slate-500">Belum ada data jadwal dokter.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
 @endsection
